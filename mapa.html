@@ -138,7 +138,7 @@
 
   <script>
     // ======================================================
-    // GEOJSON – ZONA CHARACATO
+    // GEOJSON – ZONAS (por ahora: CHARACATO y CHIGUATA)
     // ======================================================
 
     const zonasGeoJson = {
@@ -154,7 +154,9 @@
             "telefono": "972960129 / 958798821",
             "horario": "Martes y viernes de 10:00 a 13:00 horas",
             "correo": "deivyherrera19@gmail.com",
-            "mapsUrl": "https://maps.app.goo.gl/Erg1uZrfSop2W2yo6"
+            "mapsUrl": "https://maps.app.goo.gl/Erg1uZrfSop2W2yo6",
+            "markerLat": -16.4728798,
+            "markerLng": -71.4829052
           },
           "geometry": {
             "type": "Polygon",
@@ -188,12 +190,56 @@
               ]
             ]
           }
+        },
+        {
+          "type": "Feature",
+          "properties": {
+            "id_zona": 2,
+            "zona": "CHIGUATA",
+            "juez_de_paz": "No registrado",
+            "direccion": "Chiguata 04200, Arequipa",
+            "telefono": "No registrado",
+            "horario": "No registrado",
+            "correo": "No registrado",
+            "mapsUrl": "https://maps.app.goo.gl/ec9MKsdRiihD4qbo8",
+            "markerLat": -16.402775,
+            "markerLng": -71.392962
+          },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [-71.491737, -16.461658],
+                [-71.484529, -16.464705],
+                [-71.481697, -16.465694],
+                [-71.476115, -16.467168],
+                [-71.47028,  -16.469062],
+                [-71.463243, -16.470544],
+                [-71.45878,  -16.470709],
+                [-71.455863, -16.471532],
+                [-71.460411, -16.475979],
+                [-71.45715,  -16.481662],
+                [-71.457922, -16.482979],
+                [-71.466675, -16.481826],
+                [-71.470709, -16.48545],
+                [-71.476544, -16.485697],
+                [-71.485212, -16.485038],
+                [-71.490103, -16.485285],
+                [-71.491905, -16.487261],
+                [-71.498084, -16.487591],
+                [-71.502889, -16.488497],
+                [-71.506322, -16.488003],
+                [-71.50246,  -16.479356],
+                [-71.502117, -16.473839],
+                [-71.499028, -16.468403],
+                [-71.496024, -16.463956],
+                [-71.491737, -16.461658]
+              ]
+            ]
+          }
         }
       ]
     };
-
-    // Coordenadas del juzgado (Plaza de Characato)
-    const juzgadoCharacatoCoords = [-16.4728798, -71.4829052];
 
     // ======================================================
     // INICIALIZAR MAPA
@@ -238,7 +284,7 @@
     }
 
     // ======================================================
-    // ICONO ROJO PARA EL JUZGADO
+    // ICONO ROJO PARA TODOS LOS JUZGADOS
     // ======================================================
 
     const redIcon = L.icon({
@@ -250,13 +296,11 @@
       shadowSize: [41, 41]
     });
 
-    // Marcador rojo en la plaza (juzgado)
-    const juzgadoMarker = L.marker(juzgadoCharacatoCoords, { icon: redIcon })
-      .addTo(map)
-      .bindPopup("Juzgado de Paz de Characato");
+    // Guardamos los marcadores por id_zona
+    const markersById = {};
 
     // ======================================================
-    // DIBUJAR POLÍGONO GEOJSON
+    // DIBUJAR POLÍGONOS GEOJSON + MARCADORES
     // ======================================================
 
     const zonasLayer = L.geoJSON(zonasGeoJson, {
@@ -269,24 +313,38 @@
         };
       },
       onEachFeature: function (feature, layer) {
-        // Tooltip con nombre de zona
-        layer.bindTooltip(feature.properties.zona, {
-          sticky: true
-        });
+        const props = feature.properties;
 
-        // Click → mostrar datos en panel y resaltar el pin rojo
+        // Crear marcador rojo para esta zona
+        if (props.markerLat && props.markerLng) {
+          const marker = L.marker([props.markerLat, props.markerLng], { icon: redIcon })
+            .addTo(map)
+            .bindPopup(`Juzgado de Paz de ${props.zona}`);
+
+          markersById[props.id_zona] = marker;
+        }
+
+        // Tooltip con nombre de zona
+        layer.bindTooltip(props.zona, { sticky: true });
+
+        // Click → mostrar datos en panel y centrar en el pin correspondiente
         layer.on("click", function () {
-          showZoneDetails(feature.properties);
-          // Centrar y hacer zoom sobre el juzgado
-          map.setView(juzgadoCharacatoCoords, 17);
-          juzgadoMarker.openPopup();
+          showZoneDetails(props);
+
+          const marker = markersById[props.id_zona];
+          if (marker) {
+            map.setView([props.markerLat, props.markerLng], 17);
+            marker.openPopup();
+          } else {
+            // fallback: centrar en el polígono
+            map.fitBounds(layer.getBounds());
+          }
         });
       }
     }).addTo(map);
 
-    // Centrar el mapa para que Characato se vea bien al inicio
+    // Centrar el mapa para que todas las zonas se vean
     map.fitBounds(zonasLayer.getBounds());
   </script>
 </body>
 </html>
-
