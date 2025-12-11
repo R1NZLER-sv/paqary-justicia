@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Paqary Justicia - Jueces de Paz</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paqary Justicia - Mapa de Jueces de Paz</title>
 
-  <!-- CSS de Leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Leaflet CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
   <style>
     * {
       margin: 0;
@@ -15,124 +19,250 @@
     }
 
     body {
-      font-family: 'Inter', sans-serif;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+        sans-serif;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      height: 100vh;
+      background: #f4ece3; /* mismo crema del index */
+      color: #4a2e1f;
     }
 
     header {
-      background-color: #111827;
-      color: #f9fafb;
-      padding: 16px;
+      padding: 12px 20px;
       text-align: center;
-      font-size: 24px;
-      font-weight: bold;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid #d7c8b4;
+      font-weight: 700;
+      letter-spacing: 1px;
     }
 
     #container {
-      display: flex;
       flex: 1;
-      height: calc(100vh - 60px); /* Altura menos el header */
+      display: flex;
+      height: calc(100vh - 52px);
     }
 
+    /* Panel izquierdo */
+    #sidebar {
+      width: 360px;
+      max-width: 100%;
+      background: #f9f2e7;
+      border-right: 1px solid #d7c8b4;
+      padding: 16px 18px;
+      overflow-y: auto;
+    }
+
+    #sidebar h2 {
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+      color: #4a2e1f;
+    }
+
+    #sidebar p {
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+      color: #6b4a32;
+    }
+
+    .empty-message {
+      margin-top: 8px;
+      font-size: 0.95rem;
+      color: #8b6748;
+    }
+
+    .field-label {
+      font-weight: 600;
+      color: #4a2e1f;
+    }
+
+    .zone-pill {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      margin-top: 6px;
+      background: #e6d2b7;
+      color: #4a2e1f;
+    }
+
+    /* Mapa a la derecha */
     #map {
       flex: 1;
       height: 100%;
     }
 
-    #sidebar {
-      max-width: 350px;
-      padding: 16px;
-      background: #f9fafb;
-      border-right: 1px solid #e5e7eb;
-      overflow-y: auto;
-    }
+    /* Responsive: en pantallas muy pequeñas el panel se pone arriba */
+    @media (max-width: 768px) {
+      #container {
+        flex-direction: column;
+      }
 
-    .zone-card {
-      background-color: #ffffff;
-      padding: 12px;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      margin-bottom: 12px;
-    }
+      #sidebar {
+        width: 100%;
+        height: 260px;
+        border-right: none;
+        border-bottom: 1px solid #d7c8b4;
+      }
 
-    .zone-card h3 {
-      font-size: 16px;
-      margin: 0 0 8px;
-      color: #3b82f6;
-    }
-
-    .zone-card p {
-      font-size: 14px;
-      margin: 4px 0;
-      color: #374151;
+      #map {
+        height: calc(100% - 260px);
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Encabezado con el título -->
-  <header>
-    Paqary Justicia
-  </header>
+  <header>Mapa de Jueces de Paz - Paqary Justicia</header>
+
   <div id="container">
+    <!-- PANEL IZQUIERDO -->
+    <aside id="sidebar">
+      <h2>Selecciona un juzgado en el mapa</h2>
+      <p class="empty-message">
+        Haz clic sobre una zona coloreada para ver los datos del juez de paz,
+        su juzgado y la información de contacto.
+      </p>
+
+      <div id="zone-details"></div>
+    </aside>
+
+    <!-- MAPA -->
     <div id="map"></div>
   </div>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js"></script>
-  <!-- Leaflet -->
+  <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
-    // Configurar Firebase (reemplaza con tus credenciales)
-    const firebaseConfig = {
-      apiKey: "TU_API_KEY",
-      authDomain: "TU_AUTH_DOMAIN",
-      projectId: "TU_PROJECT_ID",
-      storageBucket: "TU_STORAGE_BUCKET",
-      messagingSenderId: "TU_MESSAGING_SENDER_ID",
-      appId: "TU_APP_ID"
-    };
-    const app = firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore(app);
+    // ================================
+    // 1. DATOS DE LOS JUZGADOS / ZONAS
+    // ================================
+    // Aquí vas pegando tus datos.
+    // Cada "zone" representa un juzgado / área de juez de paz.
+    // coordinates: es un polígono (array de [lat, lng]).
+    // Usa esto como plantilla y duplica los objetos para tus demás juzgados.
 
-    // Inicializar el mapa
-    const map = L.map('map').setView([-16.3989, -71.535], 12);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap contributors'
+    const zones = [
+      {
+        id: 1,
+        district: "CHARACATO",
+        court: "Characato",
+        judge: "DEIVY HERRERA TORRES",
+        phone: "999 999 999",
+        email: "characato@paqary.org",
+        address: "Plaza Principal de Characato s/n",
+        color: "#ef4444", // rojo
+        coordinates: [
+          [-16.455, -71.48],
+          [-16.46, -71.46],
+          [-16.48, -71.47],
+          [-16.475, -71.49],
+        ],
+      },
+      {
+        id: 2,
+        district: "CHIGUATA",
+        court: "Chiguata",
+        judge: "DEIVY HERRERA TORRES",
+        phone: "988 888 888",
+        email: "chiguata@paqary.org",
+        address: "Juzgado de Paz de Chiguata",
+        color: "#22c55e", // verde
+        coordinates: [
+          [-16.4, -71.43],
+          [-16.41, -71.41],
+          [-16.43, -71.42],
+          [-16.42, -71.44],
+        ],
+      },
+      {
+        id: 3,
+        district: "LA JOYA",
+        court: "La Joya",
+        judge: "ROSARIO FARFÁN CCARI",
+        phone: "977 777 777",
+        email: "lajoya@paqary.org",
+        address: "Local comunal de La Joya",
+        color: "#3b82f6", // azul
+        coordinates: [
+          [-16.37, -71.7],
+          [-16.365, -71.67],
+          [-16.39, -71.66],
+          [-16.4, -71.69],
+        ],
+      },
+    ];
+
+    // Cuando tengas los datos reales:
+    // - Cambias district, court, judge, phone, email, address.
+    // - Ajustas "color" si quieres.
+    // - Reemplazas "coordinates" por el polígono real (lat, lng) de cada zona.
+
+    // ================================
+    // 2. INICIALIZAR MAPA
+    // ================================
+    const map = L.map("map").setView([-16.4, -71.54], 10); // Vista general Arequipa
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      attribution: "© OpenStreetMap contributors",
     }).addTo(map);
 
-    // Cargar zonas desde Firebase y visualización
-    const loadZonesFromFirestore = async () => {
-      const zonesSnapshot = await db.collection("zones").get();
+    // ================================
+    // 3. PANEL LATERAL: FUNCIÓN
+    // ================================
+    const zoneDetailsDiv = document.getElementById("zone-details");
 
-      zonesSnapshot.forEach(doc => {
-        const zone = doc.data();
-        const polygon = L.polygon(JSON.parse(zone.coordinates), {
-          color: "blue",
-          fillOpacity: 0.5,
-          weight: 2
-        }).addTo(map);
+    function showZoneDetails(zone) {
+      zoneDetailsDiv.innerHTML = `
+        <h2>${zone.court} - ${zone.district}</h2>
+        <span class="zone-pill">Juzgado de Paz</span>
 
-        // Mostrar Popup con detalles
-        polygon.bindPopup(`
-          <div>
-            <h3 style="color: #3b82f6; margin: 0;">${zone.name}</h3>
-            <p><strong>Provincia:</strong> ${zone.province}</p>
-            <p><strong>Juez:</strong> ${zone.judge}</p>
-            <p><strong>Correo:</strong> ${zone.email}</p>
-            <p><strong>Teléfono:</strong> ${zone.phone}</p>
-          </div>
-        `);
+        <div style="margin-top: 14px; text-align: left;">
+          <p><span class="field-label">Nombre del juez:</span><br>${zone.judge}</p>
+          <p><span class="field-label">Teléfono de contacto:</span><br>${
+            zone.phone || "No registrado"
+          }</p>
+          <p><span class="field-label">Correo electrónico:</span><br>${
+            zone.email || "No registrado"
+          }</p>
+          <p><span class="field-label">Dirección:</span><br>${
+            zone.address || "No registrada"
+          }</p>
+        </div>
+      `;
+    }
+
+    // ================================
+    // 4. CREAR POLÍGONOS EN EL MAPA
+    // ================================
+    zones.forEach((zone) => {
+      const polygon = L.polygon(zone.coordinates, {
+        color: zone.color,
+        weight: 2,
+        fillColor: zone.color,
+        fillOpacity: 0.35,
+      }).addTo(map);
+
+      // Tooltip al pasar el mouse
+      polygon.bindTooltip(
+        `${zone.court} - ${zone.district}`,
+        { direction: "center", sticky: true }
+      );
+
+      // Click: mostrar detalles en el panel
+      polygon.on("click", () => {
+        showZoneDetails(zone);
       });
-    };
 
-    // Cargar las zonas al abrir el mapa
-    loadZonesFromFirestore();
+      // Efecto hover suave
+      polygon.on("mouseover", function () {
+        this.setStyle({ weight: 3, fillOpacity: 0.5 });
+      });
+
+      polygon.on("mouseout", function () {
+        this.setStyle({ weight: 2, fillOpacity: 0.35 });
+      });
+    });
   </script>
 </body>
 </html>
