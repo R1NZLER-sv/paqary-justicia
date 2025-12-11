@@ -32,8 +32,6 @@
       background-blend-mode: multiply;
 
       color: #4a2e1f;
-      display: flex;
-      flex-direction: column;
     }
 
     header {
@@ -46,15 +44,15 @@
       font-size: 1.05rem;
     }
 
+    /* Contenedor principal: ocupa casi toda la pantalla */
     #container {
-      flex: 1;
       display: flex;
-      min-height: 0; /* Permite escalar correctamente */
+      height: calc(100vh - 60px); /* 60px aprox. del header */
     }
 
     /* Panel izquierdo */
     #sidebar {
-      width: 360px;
+      width: 320px;
       max-width: 100%;
       background: rgba(247,239,230,0.95);
       border-right: 1px solid #d7c8b4;
@@ -92,7 +90,6 @@
     /* Mapa a la derecha */
     #map {
       flex: 1;
-      min-height: 0;
       height: 100%;
     }
 
@@ -100,17 +97,19 @@
     @media (max-width: 768px) {
       #container {
         flex-direction: column;
+        height: auto;
+        min-height: 100vh;
       }
 
       #sidebar {
         width: 100%;
         border-right: none;
         border-bottom: 1px solid #d7c8b4;
+        max-height: 40vh;
       }
 
       #map {
-        height: 50vh;
-        min-height: 300px;
+        height: 60vh;
       }
     }
   </style>
@@ -124,8 +123,8 @@
 
     <!-- PANEL IZQUIERDO -->
     <aside id="sidebar">
-      <h2>Selecciona un juzgado en el mapa</h2>
-      <p>Haz clic sobre un distrito para ver los datos del juez de paz.</p>
+      <h2>Selecciona una zona en el mapa</h2>
+      <p>Haz clic sobre un área coloreada para ver los datos del juez de paz.</p>
       <div id="zone-details"></div>
     </aside>
 
@@ -139,52 +138,65 @@
 
   <script>
     // ======================================================
-    // DATOS REALES — PROVINCIA AREQUIPA
+    // GEOJSON – ZONA CHARACATO
     // ======================================================
 
-    const zones = [
-      {
-  district: "Characato",
-  court: "Characato",
-  judge: "DEIVY HERRERA TORRES",
-  address: "Calle Socabaya N° 100, Plaza Principal de Characato",
-  phone: "972960129 / 958798821",
-  schedule: "Martes y viernes de 10:00 a 13:00 horas",
-  email: "deivyherrera19@gmail.com",
-  mapsUrl: "https://maps.app.goo.gl/Erg1uZrfSop2W2yo6",
-  lat: -16.4727,
-  lng: -71.4898
-},
-
-      { district: "Chiguata", court: "Chiguata", judge: "DEIVY HERRERA TORRES", lat: -16.4074, lng: -71.3548 },
-      { district: "La Joya", court: "La Joya", judge: "ROSARIO FARFÁN CCAIRI", lat: -16.3580, lng: -71.7140 },
-      { district: "La Joya", court: "San José", judge: "LUCY FLORES CCARI", lat: -16.3580, lng: -71.7140 },
-      { district: "La Joya", court: "San Camilo", judge: "CARLOS HERNÁNDEZ ROJAS", lat: -16.3580, lng: -71.7140 },
-      { district: "La Joya", court: "La Cano", judge: "ROSARIO FARFÁN CCAIRI", lat: -16.3580, lng: -71.7140 },
-      { district: "La Joya", court: "San Isidro", judge: "ELFER ASCUÑA EGO-AGUIRRE", lat: -16.3580, lng: -71.7140 },
-      { district: "Mollebaya", court: "Mollebaya", judge: "PEDRO RODOLFO FLORES", lat: -16.5355, lng: -71.4483 },
-      { district: "Pocsi", court: "Pocsi", judge: "SUSANA AGAPITA MAMANI", lat: -16.5522, lng: -71.4141 },
-      { district: "Polobaya", court: "Polobaya", judge: "JORGE LUIS ZEGARRA", lat: -16.5919, lng: -71.4235 },
-      { district: "Quequeña", court: "Quequeña", judge: "MIGUEL ÁNGEL QUISPE", lat: -16.4873, lng: -71.4407 },
-      { district: "Santa Isabel de Siguas", court: "Sta. Isabel de Siguas", judge: "LUCIO GILBERTO CÁCERES", lat: -16.3269, lng: -72.1100 },
-      { district: "Santa Isabel de Siguas", court: "Pitay", judge: "MARÍA ANGÉLICA HERRERA", lat: -16.3269, lng: -72.1100 },
-      { district: "San Juan de Siguas", court: "San Juan de Siguas", judge: "RENE LUCIO GILES", lat: -16.3190, lng: -72.2460 },
-      { district: "San Juan de Tarucani", court: "San Juan de Tarucani", judge: "ESTALINSO FLORES", lat: -16.2162, lng: -71.0707 },
-      { district: "San Juan de Tarucani", court: "Huayllacucho", judge: "SERGIO MAMANI", lat: -16.2162, lng: -71.0707 },
-      { district: "San Juan de Tarucani", court: "La Yunta", judge: "EUGENIA VILCA QUISPE", lat: -16.2162, lng: -71.0707 },
-      { district: "Santa Rita de Siguas", court: "Santa Rita de Siguas", judge: "RENE LUCIO GILES", lat: -16.3838, lng: -72.1751 },
-      { district: "Uchumayo", court: "Uchumayo", judge: "ROSENDO CÁCERES", lat: -16.4267, lng: -71.6453 },
-      { district: "Uchumayo", court: "Congata", judge: "LUIS EDUARDO GONZALES", lat: -16.4267, lng: -71.6453 },
-      { district: "Vítor", court: "Vítor", judge: "OLENKA XIOMARA CHAMBI", lat: -16.4130, lng: -71.9300 },
-      { district: "Yarabamba", court: "Yarabamba", judge: "YOLANDA JUANA MAMANI", lat: -16.5368, lng: -71.4813 },
-      { district: "Yura", court: "Yura", judge: "ELIANA RUTH BAUTISTA", lat: -16.3040, lng: -71.6750 }
-    ];
+    const zonasGeoJson = {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "properties": {
+            "id_zona": 1,
+            "zona": "CHARACATO",
+            "juez_de_paz": "DEIVY HERRERA TORRES",
+            "direccion": "Calle Socabaya N° 100, Plaza Principal de Characato",
+            "telefono": "972960129 / 958798821",
+            "horario": "Martes y viernes de 10:00 a 13:00 horas",
+            "correo": "deivyherrera19@gmail.com",
+            "mapsUrl": "https://maps.app.goo.gl/Erg1uZrfSop2W2yo6"
+          },
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [-71.491737, -16.461658],
+                [-71.484529, -16.464705],
+                [-71.481697, -16.465694],
+                [-71.476115, -16.467168],
+                [-71.470280, -16.469062],
+                [-71.463243, -16.470544],
+                [-71.458780, -16.470709],
+                [-71.455863, -16.471532],
+                [-71.460411, -16.475979],
+                [-71.457150, -16.481662],
+                [-71.457922, -16.482979],
+                [-71.466675, -16.481826],
+                [-71.470709, -16.485450],
+                [-71.476544, -16.485697],
+                [-71.485212, -16.485038],
+                [-71.490103, -16.485285],
+                [-71.491905, -16.487261],
+                [-71.498084, -16.487591],
+                [-71.502889, -16.488497],
+                [-71.506322, -16.488003],
+                [-71.502460, -16.479356],
+                [-71.502117, -16.473839],
+                [-71.499028, -16.468403],
+                [-71.496024, -16.463956],
+                [-71.491737, -16.461658]
+              ]
+            ]
+          }
+        }
+      ]
+    };
 
     // ======================================================
     // INICIALIZAR MAPA
     // ======================================================
 
-    const map = L.map("map").setView([-16.40, -71.54], 9);
+    const map = L.map("map").setView([-16.43, -71.52], 11);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18,
@@ -192,62 +204,64 @@
     }).addTo(map);
 
     // ======================================================
-    // MOSTRAR DATOS EN PANEL
+    // PANEL LATERAL – MOSTRAR DETALLES
     // ======================================================
 
     const zoneDetailsDiv = document.getElementById("zone-details");
 
- function showZoneDetails(zone) {
-  zoneDetailsDiv.innerHTML = `
-    <h2>${zone.court}</h2>
-    <span class="zone-pill">${zone.district}</span>
+    function showZoneDetails(props) {
+      zoneDetailsDiv.innerHTML = `
+        <h2>Juzgado de Paz de ${props.zona}</h2>
+        <span class="zone-pill">${props.zona}</span>
 
-    <div style="margin-top:12px; text-align:left; line-height:1.5;">
-      <p><span class="field-label">Juez de Paz:</span><br>${zone.judge}</p>
+        <div style="margin-top:12px; text-align:left; line-height:1.5;">
+          <p><span class="field-label">Juez de Paz:</span><br>${props.juez_de_paz}</p>
 
-      <p><span class="field-label">Dirección:</span><br>${zone.address}</p>
+          <p><span class="field-label">Dirección:</span><br>${props.direccion}</p>
 
-      <p><span class="field-label">Horario de atención:</span><br>${zone.schedule}</p>
+          <p><span class="field-label">Horario de atención:</span><br>${props.horario}</p>
 
-      <p><span class="field-label">Teléfono:</span><br>${zone.phone}</p>
+          <p><span class="field-label">Teléfono:</span><br>${props.telefono}</p>
 
-      <p><span class="field-label">Correo:</span><br>${zone.email}</p>
+          <p><span class="field-label">Correo:</span><br>${props.correo}</p>
 
-      <p><span class="field-label">Cómo llegar:</span><br>
-        <a href="${zone.mapsUrl}" target="_blank" style="color:#8b4513; font-weight:600;">
-          Abrir en Google Maps
-        </a>
-      </p>
-    </div>
-  `;
-}
-
-
-    // ======================================================
-    // MARCADORES MARRONES PAQARY
-    // ======================================================
-
-    const brownIcon = L.icon({
-      iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-brown.png",
-      shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
-    });
+          <p><span class="field-label">Cómo llegar:</span><br>
+            <a href="${props.mapsUrl}" target="_blank" style="color:#8b4513; font-weight:600;">
+              Abrir en Google Maps
+            </a>
+          </p>
+        </div>
+      `;
+    }
 
     // ======================================================
-    // DIBUJAR MARCADORES
+    // DIBUJAR POLÍGONO GEOJSON
     // ======================================================
 
-    zones.forEach(zone => {
-      const marker = L.marker([zone.lat, zone.lng], { icon: brownIcon })
-        .addTo(map)
-        .bindTooltip(`${zone.district}`, { sticky: true });
+    const zonasLayer = L.geoJSON(zonasGeoJson, {
+      style: function (feature) {
+        return {
+          color: "#8b4513",      // borde marrón
+          weight: 2,
+          fillColor: "#d9b48f",  // relleno tierra-crema
+          fillOpacity: 0.45
+        };
+      },
+      onEachFeature: function (feature, layer) {
+        // Tooltip con nombre de zona
+        layer.bindTooltip(feature.properties.zona, {
+          sticky: true
+        });
 
-      marker.on("click", () => showZoneDetails(zone));
-    });
+        // Click → mostrar datos en panel
+        layer.on("click", function () {
+          showZoneDetails(feature.properties);
+        });
+      }
+    }).addTo(map);
 
+    // Centrar el mapa para que Characato se vea bien
+    map.fitBounds(zonasLayer.getBounds());
   </script>
 </body>
 </html>
