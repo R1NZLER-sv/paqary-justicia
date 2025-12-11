@@ -146,169 +146,56 @@
     // Más adelante leeremos esto desde tu Excel.
     // De momento, dejamos 3 zonas de ejemplo para probar.
 
-const zones = [
-  {
-    district: "Characato",
-    court: "Characato",
-    judge: "DEIVY HERRERA TORRES",
-    lat: -16.4727,
-    lng: -71.4898
-  },
-  {
-    district: "Chiguata",
-    court: "Chiguata",
-    judge: "DEIVY HERRERA TORRES",
-    lat: -16.4074,
-    lng: -71.3548
-  },
-  {
-    district: "La Joya",
-    court: "La Joya",
-    judge: "ROSARIO FARFÁN CCAIRI",
-    lat: -16.3580,
-    lng: -71.7140
-  },
-  {
-    district: "La Joya",
-    court: "San José",
-    judge: "LUCY FLORES CCARI",
-    lat: -16.3580,
-    lng: -71.7140
-  },
-  {
-    district: "La Joya",
-    court: "San Camilo",
-    judge: "CARLOS HERNÁNDEZ ROJAS",
-    lat: -16.3580,
-    lng: -71.7140
-  },
-  {
-    district: "La Joya",
-    court: "La Cano",
-    judge: "ROSARIO FARFÁN CCAIRI",
-    lat: -16.3580,
-    lng: -71.7140
-  },
-  {
-    district: "La Joya",
-    court: "San Isidro",
-    judge: "ELFER ASCUÑA EGO-AGUIRRE",
-    lat: -16.3580,
-    lng: -71.7140
-  },
-  {
-    district: "Mollebaya",
-    court: "Mollebaya",
-    judge: "PEDRO RODOLFO FLORES",
-    lat: -16.5355,
-    lng: -71.4483
-  },
-  {
-    district: "Pocsi",
-    court: "Pocsi",
-    judge: "SUSANA AGAPITA MAMANI",
-    lat: -16.5522,
-    lng: -71.4141
-  },
-  {
-    district: "Polobaya",
-    court: "Polobaya",
-    judge: "JORGE LUIS ZEGARRA",
-    lat: -16.5919,
-    lng: -71.4235
-  },
-  {
-    district: "Quequeña",
-    court: "Quequeña",
-    judge: "MIGUEL ÁNGEL QUISPE",
-    lat: -16.4873,
-    lng: -71.4407
-  },
-  {
-    district: "Santa Isabel de Siguas",
-    court: "Sta. Isabel de Siguas",
-    judge: "LUCIO GILBERTO CÁCERES",
-    lat: -16.3269,
-    lng: -72.1100
-  },
-  {
-    district: "Santa Isabel de Siguas",
-    court: "Pitay",
-    judge: "MARÍA ANGÉLICA HERRERA",
-    lat: -16.3269,
-    lng: -72.1100
-  },
-  {
-    district: "San Juan de Siguas",
-    court: "San Juan de Siguas",
-    judge: "RENE LUCIO GILES",
-    lat: -16.3190,
-    lng: -72.2460
-  },
-  {
-    district: "San Juan de Tarucani",
-    court: "San Juan de Tarucani",
-    judge: "ESTALINSO FLORES",
-    lat: -16.2162,
-    lng: -71.0707
-  },
-  {
-    district: "San Juan de Tarucani",
-    court: "Huayllacucho",
-    judge: "SERGIO MAMANI",
-    lat: -16.2162,
-    lng: -71.0707
-  },
-  {
-    district: "San Juan de Tarucani",
-    court: "La Yunta",
-    judge: "EUGENIA VILCA QUISPE",
-    lat: -16.2162,
-    lng: -71.0707
-  },
-  {
-    district: "Santa Rita de Siguas",
-    court: "Santa Rita de Siguas",
-    judge: "RENE LUCIO GILES",
-    lat: -16.3838,
-    lng: -72.1751
-  },
-  {
-    district: "Uchumayo",
-    court: "Uchumayo",
-    judge: "ROSENDO CÁCERES",
-    lat: -16.4267,
-    lng: -71.6453
-  },
-  {
-    district: "Uchumayo",
-    court: "Congata",
-    judge: "LUIS EDUARDO GONZALES",
-    lat: -16.4267,
-    lng: -71.6453
-  },
-  {
-    district: "Vítor",
-    court: "Vítor",
-    judge: "OLENKA XIOMARA CHAMBI",
-    lat: -16.4130,
-    lng: -71.9300
-  },
-  {
-    district: "Yarabamba",
-    court: "Yarabamba",
-    judge: "YOLANDA JUANA MAMANI",
-    lat: -16.5368,
-    lng: -71.4813
-  },
-  {
-    district: "Yura",
-    court: "Yura",
-    judge: "ELIANA RUTH BAUTISTA",
-    lat: -16.3040,
-    lng: -71.6750
-  }
-];
+    const zones = [
+      {
+        id: 1,
+        district: "CHARACATO",
+        court: "Juzgado de Paz de Characato",
+        judge: "DEIVY HERRERA TORRES",
+        phone: "999 999 999",
+        email: "characato@ejemplo.org",
+        address: "Plaza principal de Characato s/n",
+        color: "#ef4444", // rojo
+        coordinates: [
+          [-16.45, -71.49],
+          [-16.46, -71.47],
+          [-16.47, -71.49],
+          [-16.46, -71.51]
+        ]
+      },
+      {
+        id: 2,
+        district: "CHIGUATA",
+        court: "Juzgado de Paz de Chiguata",
+        judge: "DEIVY HERRERA TORRES",
+        phone: "988 888 888",
+        email: "chiguata@ejemplo.org",
+        address: "Calle Principal 123, Chiguata",
+        color: "#22c55e", // verde
+        coordinates: [
+          [-16.39, -71.45],
+          [-16.40, -71.43],
+          [-16.41, -71.45],
+          [-16.40, -71.47]
+        ]
+      },
+      {
+        id: 3,
+        district: "LA JOYA",
+        court: "Juzgado de Paz de La Joya",
+        judge: "ROSARIO FARFÁN CCARI",
+        phone: "977 777 777",
+        email: "lajoya@ejemplo.org",
+        address: "Local comunal de La Joya",
+        color: "#3b82f6", // azul
+        coordinates: [
+          [-16.36, -71.71],
+          [-16.365, -71.69],
+          [-16.38, -71.69],
+          [-16.385, -71.71]
+        ]
+      }
+    ];
 
 
     // =====================================================
