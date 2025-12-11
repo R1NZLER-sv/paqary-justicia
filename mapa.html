@@ -21,46 +21,54 @@
     body {
       font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
         sans-serif;
-      height: 100vh;
+
+      /* Fondo crema estilo editorial (mismo mood que el index) */
+      background:
+        linear-gradient(135deg, rgba(234,219,200,0.5), rgba(247,239,230,0.9)),
+        linear-gradient(180deg, #f7efe6, #eadbc8);
+      background-blend-mode: multiply;
+
+      color: #4a2e1f;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      background: #f4ece3; /* mismo crema del index */
-      color: #4a2e1f;
     }
 
     header {
-      padding: 12px 20px;
+      background-color: #111827;
+      color: #f9fafb;
       text-align: center;
-      border-bottom: 1px solid #d7c8b4;
+      padding: 10px 16px;
       font-weight: 700;
       letter-spacing: 1px;
+      font-size: 1rem;
     }
 
     #container {
       flex: 1;
       display: flex;
-      height: calc(100vh - 52px);
+      min-height: 0; /* importante para que el mapa crezca correctamente */
     }
 
-    /* Panel izquierdo */
+    /* Panel izquierdo con datos */
     #sidebar {
       width: 360px;
       max-width: 100%;
-      background: #f9f2e7;
+      background: rgba(247,239,230,0.95);
       border-right: 1px solid #d7c8b4;
       padding: 16px 18px;
       overflow-y: auto;
     }
 
     #sidebar h2 {
-      font-size: 1.15rem;
-      margin-bottom: 8px;
+      font-size: 1.1rem;
+      margin-bottom: 6px;
       color: #4a2e1f;
     }
 
     #sidebar p {
       font-size: 0.95rem;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       color: #6b4a32;
     }
 
@@ -77,21 +85,22 @@
 
     .zone-pill {
       display: inline-block;
-      padding: 3px 8px;
+      padding: 3px 9px;
       border-radius: 999px;
       font-size: 0.8rem;
-      margin-top: 6px;
       background: #e6d2b7;
       color: #4a2e1f;
+      margin-top: 6px;
     }
 
     /* Mapa a la derecha */
     #map {
       flex: 1;
+      min-height: 400px;
       height: 100%;
     }
 
-    /* Responsive: en pantallas muy pequeñas el panel se pone arriba */
+    /* Responsive: en pantallas pequeñas el panel va arriba */
     @media (max-width: 768px) {
       #container {
         flex-direction: column;
@@ -99,29 +108,27 @@
 
       #sidebar {
         width: 100%;
-        height: 260px;
         border-right: none;
         border-bottom: 1px solid #d7c8b4;
       }
 
       #map {
-        height: calc(100% - 260px);
+        min-height: 300px;
       }
     }
   </style>
 </head>
 <body>
-  <header>Mapa de Jueces de Paz - Paqary Justicia</header>
+  <header>Paqary Justicia – Mapa de Jueces de Paz</header>
 
   <div id="container">
     <!-- PANEL IZQUIERDO -->
     <aside id="sidebar">
       <h2>Selecciona un juzgado en el mapa</h2>
       <p class="empty-message">
-        Haz clic sobre una zona coloreada para ver los datos del juez de paz,
-        su juzgado y la información de contacto.
+        Haz clic sobre una zona coloreada para ver el nombre del juez de paz,
+        su juzgado y los datos de contacto.
       </p>
-
       <div id="zone-details"></div>
     </aside>
 
@@ -133,128 +140,115 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <script>
-    // ================================
-    // 1. DATOS DE LOS JUZGADOS / ZONAS
-    // ================================
-    // Aquí vas pegando tus datos.
-    // Cada "zone" representa un juzgado / área de juez de paz.
-    // coordinates: es un polígono (array de [lat, lng]).
-    // Usa esto como plantilla y duplica los objetos para tus demás juzgados.
+    // =====================================================
+    // 1. ZONAS / JUZGADOS (EJEMPLO)
+    // =====================================================
+    // Más adelante leeremos esto desde tu Excel.
+    // De momento, dejamos 3 zonas de ejemplo para probar.
 
     const zones = [
       {
         id: 1,
         district: "CHARACATO",
-        court: "Characato",
+        court: "Juzgado de Paz de Characato",
         judge: "DEIVY HERRERA TORRES",
         phone: "999 999 999",
-        email: "characato@paqary.org",
-        address: "Plaza Principal de Characato s/n",
+        email: "characato@ejemplo.org",
+        address: "Plaza principal de Characato s/n",
         color: "#ef4444", // rojo
         coordinates: [
-          [-16.455, -71.48],
-          [-16.46, -71.46],
-          [-16.48, -71.47],
-          [-16.475, -71.49],
-        ],
+          [-16.45, -71.49],
+          [-16.46, -71.47],
+          [-16.47, -71.49],
+          [-16.46, -71.51]
+        ]
       },
       {
         id: 2,
         district: "CHIGUATA",
-        court: "Chiguata",
+        court: "Juzgado de Paz de Chiguata",
         judge: "DEIVY HERRERA TORRES",
         phone: "988 888 888",
-        email: "chiguata@paqary.org",
-        address: "Juzgado de Paz de Chiguata",
+        email: "chiguata@ejemplo.org",
+        address: "Calle Principal 123, Chiguata",
         color: "#22c55e", // verde
         coordinates: [
-          [-16.4, -71.43],
-          [-16.41, -71.41],
-          [-16.43, -71.42],
-          [-16.42, -71.44],
-        ],
+          [-16.39, -71.45],
+          [-16.40, -71.43],
+          [-16.41, -71.45],
+          [-16.40, -71.47]
+        ]
       },
       {
         id: 3,
         district: "LA JOYA",
-        court: "La Joya",
+        court: "Juzgado de Paz de La Joya",
         judge: "ROSARIO FARFÁN CCARI",
         phone: "977 777 777",
-        email: "lajoya@paqary.org",
+        email: "lajoya@ejemplo.org",
         address: "Local comunal de La Joya",
         color: "#3b82f6", // azul
         coordinates: [
-          [-16.37, -71.7],
-          [-16.365, -71.67],
-          [-16.39, -71.66],
-          [-16.4, -71.69],
-        ],
-      },
+          [-16.36, -71.71],
+          [-16.365, -71.69],
+          [-16.38, -71.69],
+          [-16.385, -71.71]
+        ]
+      }
     ];
 
-    // Cuando tengas los datos reales:
-    // - Cambias district, court, judge, phone, email, address.
-    // - Ajustas "color" si quieres.
-    // - Reemplazas "coordinates" por el polígono real (lat, lng) de cada zona.
-
-    // ================================
+    // =====================================================
     // 2. INICIALIZAR MAPA
-    // ================================
-    const map = L.map("map").setView([-16.4, -71.54], 10); // Vista general Arequipa
+    // =====================================================
+
+    const map = L.map("map").setView([-16.4, -71.54], 9); // vista general Arequipa
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 18,
-      attribution: "© OpenStreetMap contributors",
+      attribution: "© OpenStreetMap contributors"
     }).addTo(map);
 
-    // ================================
-    // 3. PANEL LATERAL: FUNCIÓN
-    // ================================
+    // =====================================================
+    // 3. FUNCIÓN PARA MOSTRAR DATOS EN EL PANEL
+    // =====================================================
+
     const zoneDetailsDiv = document.getElementById("zone-details");
 
     function showZoneDetails(zone) {
       zoneDetailsDiv.innerHTML = `
-        <h2>${zone.court} - ${zone.district}</h2>
-        <span class="zone-pill">Juzgado de Paz</span>
+        <h2>${zone.court}</h2>
+        <span class="zone-pill">${zone.district}</span>
 
         <div style="margin-top: 14px; text-align: left;">
           <p><span class="field-label">Nombre del juez:</span><br>${zone.judge}</p>
-          <p><span class="field-label">Teléfono de contacto:</span><br>${
-            zone.phone || "No registrado"
-          }</p>
-          <p><span class="field-label">Correo electrónico:</span><br>${
-            zone.email || "No registrado"
-          }</p>
-          <p><span class="field-label">Dirección:</span><br>${
-            zone.address || "No registrada"
-          }</p>
+          <p><span class="field-label">Teléfono de contacto:</span><br>${zone.phone || "No registrado"}</p>
+          <p><span class="field-label">Correo electrónico:</span><br>${zone.email || "No registrado"}</p>
+          <p><span class="field-label">Dirección:</span><br>${zone.address || "No registrada"}</p>
         </div>
       `;
     }
 
-    // ================================
-    // 4. CREAR POLÍGONOS EN EL MAPA
-    // ================================
+    // =====================================================
+    // 4. DIBUJAR POLÍGONOS EN EL MAPA
+    // =====================================================
+
     zones.forEach((zone) => {
       const polygon = L.polygon(zone.coordinates, {
         color: zone.color,
         weight: 2,
         fillColor: zone.color,
-        fillOpacity: 0.35,
+        fillOpacity: 0.35
       }).addTo(map);
 
-      // Tooltip al pasar el mouse
-      polygon.bindTooltip(
-        `${zone.court} - ${zone.district}`,
-        { direction: "center", sticky: true }
-      );
+      polygon.bindTooltip(`${zone.district}`, {
+        sticky: true,
+        direction: "auto"
+      });
 
-      // Click: mostrar detalles en el panel
       polygon.on("click", () => {
         showZoneDetails(zone);
       });
 
-      // Efecto hover suave
       polygon.on("mouseover", function () {
         this.setStyle({ weight: 3, fillOpacity: 0.5 });
       });
