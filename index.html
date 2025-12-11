@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Paqary Justicia - Inicio</title>
 
   <style>
@@ -14,106 +14,110 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: #f4ece3; /* CREMA EDITORIAL */
-      background-image: url('https://i.imgur.com/zY9Vx1l.png');
-      background-size: cover;
-      background-attachment: fixed;
-      background-repeat: no-repeat;
-      color: #4a2e1f; /* MARRÓN SIERRA */
+
+      /* Fondo crema editorial */
+      background: #f4ece3;
+
+      /* Textura permanente (no desaparece) */
+      background-image: url('https://www.transparenttextures.com/patterns/paper.png');
+      background-repeat: repeat;
+      background-size: auto;
+
+      color: #4a2e1f; /* Marrón andino */
       min-height: 100vh;
-      text-align: center;
+
       display: flex;
       flex-direction: column;
+      text-align: center;
       padding: 0 20px;
+      overflow-x: hidden;
     }
 
-    /* CONTENIDO PRINCIPAL */
-    .container {
-      padding-top: 70px;
-      max-width: 900px;
-      margin: 0 auto;
-      animation: fadeIn 1.2s ease-out both;
-    }
-
+    /* Animación suave */
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(25px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* LOGO */
-    .logo {
-      width: 220px;
-      max-width: 75%;
-      margin-bottom: 20px;
-      animation: logoPop 1.3s ease-out both;
-    }
-
-    @keyframes logoPop {
-      0% { opacity: 0; transform: scale(0.85); }
-      70% { opacity: 1; transform: scale(1.05); }
+    @keyframes popIn {
+      0%   { opacity: 0; transform: scale(0.85); }
+      70%  { opacity: 1; transform: scale(1.05); }
       100% { transform: scale(1); }
     }
 
-    /* TÍTULO */
+    .container {
+      margin-top: 70px;
+      animation: fadeIn 1.2s ease-out both;
+    }
+
+    /* Logo */
+    .logo {
+      width: 210px;
+      max-width: 80%;
+      margin-bottom: 18px;
+      animation: popIn 1.3s ease-out both;
+    }
+
+    /* Título */
     h1 {
       font-size: 3rem;
       font-weight: 900;
       color: #4a2e1f;
-      margin-bottom: 16px;
       letter-spacing: 1px;
+      margin-bottom: 12px;
     }
 
-    /* SUBTÍTULO */
+    /* Subtítulo */
     .subtitle {
-      font-size: 1.25rem;
-      color: #6b4a32;
+      font-size: 1.2rem;
+      color: #6a4a32;
       max-width: 650px;
-      margin: 0 auto 32px auto;
       line-height: 1.6;
+      margin: 0 auto 32px auto;
     }
 
-    /* BOTÓN */
+    /* Botón */
     .btn {
-      background: #6b3e26; 
+      background: #6b3e26;
       color: #fff7ed;
       padding: 14px 34px;
-      border-radius: 8px;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 700;
       text-decoration: none;
+      border-radius: 10px;
       display: inline-block;
-      margin-top: 10px;
       transition: 0.25s ease;
-      box-shadow: 0px 3px 12px rgba(60, 33, 17, 0.25);
+      box-shadow: 0px 4px 14px rgba(60, 33, 17, 0.3);
     }
 
     .btn:hover {
       background: #4a2e1f;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 18px rgba(60, 33, 17, 0.35);
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 5px 18px rgba(60, 33, 17, 0.45);
     }
 
-    /* FLECHAS */
+    /* Flechas */
     .arrows {
-      margin-top: 26px;
+      margin-top: 22px;
       font-size: 1.8rem;
+      letter-spacing: 8px;
       color: #b08f6b;
-      letter-spacing: 10px;
+      animation: fadeIn 1.5s ease-out both;
     }
 
-    /* FOOTER */
+    /* Footer */
     footer {
       margin-top: auto;
       padding: 20px 0;
       font-size: 0.9rem;
-      color: #7a5b45;
+      color: #8b6748;
     }
 
     /* RESPONSIVE */
-    @media (max-width: 640px) {
-      h1 { font-size: 2.4rem; }
-      .subtitle { font-size: 1.05rem; }
-      .btn { font-size: 1.1rem; padding: 12px 26px; }
+    @media (max-width: 600px) {
+      h1 { font-size: 2.3rem; }
+      .subtitle { font-size: 1.06rem; }
+      .btn { font-size: 1.05rem; padding: 12px 26px; }
     }
   </style>
 </head>
@@ -122,13 +126,13 @@
 
   <div class="container">
 
-    <!-- LOGO (RECUERDA: usa exactamente el nombre de tu archivo) -->
+    <!-- Asegúrate de que el archivo del logo se llame EXACTAMENTE así -->
     <img src="./logo-paqary.png" alt="Logo Paqary Justicia" class="logo">
 
     <h1>PAQARY JUSTICIA</h1>
 
     <p class="subtitle">
-      Sembrando confianza, fortaleciendo la justicia de paz en Arequipa.<br>
+      Sembrando confianza, fortaleciendo la justicia de paz en Arequipa.<br />
       Un voluntariado comprometido con el acceso a la justicia.
     </p>
 
