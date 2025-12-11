@@ -143,7 +143,19 @@
     // ======================================================
 
     const zones = [
-      { district: "Characato", court: "Characato", judge: "DEIVY HERRERA TORRES", lat: -16.4727, lng: -71.4898 },
+      {
+  district: "Characato",
+  court: "Characato",
+  judge: "DEIVY HERRERA TORRES",
+  address: "Calle Socabaya N° 100, Plaza Principal de Characato",
+  phone: "972960129 / 958798821",
+  schedule: "Martes y viernes de 10:00 a 13:00 horas",
+  email: "deivyherrera19@gmail.com",
+  mapsUrl: "https://maps.app.goo.gl/Erg1uZrfSop2W2yo6",
+  lat: -16.4727,
+  lng: -71.4898
+},
+
       { district: "Chiguata", court: "Chiguata", judge: "DEIVY HERRERA TORRES", lat: -16.4074, lng: -71.3548 },
       { district: "La Joya", court: "La Joya", judge: "ROSARIO FARFÁN CCAIRI", lat: -16.3580, lng: -71.7140 },
       { district: "La Joya", court: "San José", judge: "LUCY FLORES CCARI", lat: -16.3580, lng: -71.7140 },
@@ -185,15 +197,31 @@
 
     const zoneDetailsDiv = document.getElementById("zone-details");
 
-    function showZoneDetails(zone) {
-      zoneDetailsDiv.innerHTML = `
-        <h2>${zone.court}</h2>
-        <span class="zone-pill">${zone.district}</span>
-        <div style="margin-top: 12px; text-align: left;">
-          <p><span class="field-label">Juez de Paz:</span><br>${zone.judge}</p>
-        </div>
-      `;
-    }
+ function showZoneDetails(zone) {
+  zoneDetailsDiv.innerHTML = `
+    <h2>${zone.court}</h2>
+    <span class="zone-pill">${zone.district}</span>
+
+    <div style="margin-top:12px; text-align:left; line-height:1.5;">
+      <p><span class="field-label">Juez de Paz:</span><br>${zone.judge}</p>
+
+      <p><span class="field-label">Dirección:</span><br>${zone.address}</p>
+
+      <p><span class="field-label">Horario de atención:</span><br>${zone.schedule}</p>
+
+      <p><span class="field-label">Teléfono:</span><br>${zone.phone}</p>
+
+      <p><span class="field-label">Correo:</span><br>${zone.email}</p>
+
+      <p><span class="field-label">Cómo llegar:</span><br>
+        <a href="${zone.mapsUrl}" target="_blank" style="color:#8b4513; font-weight:600;">
+          Abrir en Google Maps
+        </a>
+      </p>
+    </div>
+  `;
+}
+
 
     // ======================================================
     // MARCADORES MARRONES PAQARY
