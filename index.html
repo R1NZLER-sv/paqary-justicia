@@ -3,74 +3,187 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Paqary Justicia - Bienvenido</title>
+  <title>Paqary Justicia - Inicio</title>
 
-  <!-- Estilos básicos -->
   <style>
+    /* ---------------------------
+       FUENTES Y RESET
+    --------------------------- */
     body {
-      font-family: 'Inter', sans-serif;
       margin: 0;
-      background: linear-gradient(to bottom, #111827, #1f2937);
-      color: #f9fafb;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(160deg, #0d1b2a, #1b263b, #1f2937);
+      color: #f1f5f9;
+      overflow-x: hidden;
+    }
+
+    /* ---------------------------
+       DECORACIÓN (BLOBS)
+    --------------------------- */
+    .blob1, .blob2 {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.35;
+      z-index: -1;
+    }
+
+    .blob1 {
+      width: 350px;
+      height: 350px;
+      background: #1d4ed8;
+      top: -80px;
+      left: -80px;
+      animation: float1 10s infinite ease-in-out;
+    }
+
+    .blob2 {
+      width: 400px;
+      height: 400px;
+      background: #9b1c1c;
+      bottom: -100px;
+      right: -60px;
+      animation: float2 12s infinite ease-in-out;
+    }
+
+    @keyframes float1 {
+      0%,100% { transform: scale(1) translate(0,0); }
+      50% { transform: scale(1.15) translate(15px, 20px); }
+    }
+
+    @keyframes float2 {
+      0%,100% { transform: scale(1) translate(0,0); }
+      50% { transform: scale(1.1) translate(-20px, -10px); }
+    }
+
+    /* ---------------------------
+       CONTENIDO PRINCIPAL
+    --------------------------- */
+    .container {
+      text-align: center;
+      padding: 80px 20px;
+      animation: fadeIn 1.2s ease-out both;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(25px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     .logo {
-      height: 150px;
-      margin-bottom: 20px;
+      width: 230px;
+      max-width: 80%;
+      margin-bottom: 25px;
+      animation: logoPop 1.5s ease-out both;
+    }
+
+    @keyframes logoPop {
+      0% { opacity: 0; transform: scale(0.85); }
+      70% { opacity: 1; transform: scale(1.05); }
+      100% { transform: scale(1); }
     }
 
     h1 {
-      font-size: 2.5rem;
+      font-size: 3rem;
+      font-weight: 900;
+      color: #e2e8f0;
+      text-transform: uppercase;
       margin-bottom: 10px;
-      text-align: center;
+      letter-spacing: 1px;
+      animation: slideUp 1.6s ease-out both;
     }
 
-    p {
-      color: #d1d5db;
-      text-align: center;
-      margin-bottom: 20px;
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    .btn {
-      background: #3b82f6;
-      color: white;
-      padding: 10px 20px;
+    .subtitle {
       font-size: 1.25rem;
-      border-radius: 8px;
+      color: #cbd5e1;
+      max-width: 600px;
+      margin: 0 auto 32px auto;
+      animation: fadeIn 1.8s ease-out both;
+    }
+
+    /* ---------------------------
+       BOTÓN
+    --------------------------- */
+    .btn {
+      background: #1d4ed8;
+      padding: 15px 32px;
+      color: white;
       text-decoration: none;
-      font-weight: bold;
-      transition: background 0.2s;
+      font-size: 1.3rem;
+      border-radius: 12px;
+      font-weight: 700;
+      display: inline-block;
+      margin-top: 10px;
+      transition: 0.25s;
+      animation: fadeIn 2s ease-out both;
+      box-shadow: 0 0 15px rgba(29,78,216,0.4);
     }
 
     .btn:hover {
-      background: #2563eb;
+      background: #153eaa;
+      transform: scale(1.07);
+      box-shadow: 0 0 25px rgba(29,78,216,0.6);
     }
 
+    /* Flechas estilo afiche */
+    .arrows {
+      margin-top: 25px;
+      font-size: 2rem;
+      color: #93c5fd;
+      letter-spacing: 6px;
+      animation: fadeIn 2.2s ease-out both;
+    }
+
+    /* ---------------------------
+       FOOTER
+    --------------------------- */
     footer {
-      position: absolute;
-      bottom: 10px;
-      font-size: 0.875rem;
-      color: #9ca3af;
+      margin-top: 60px;
+      padding-bottom: 20px;
+      color: #94a3b8;
+      font-size: 0.95rem;
+      animation: fadeIn 2.4s ease-out both;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      h1 { font-size: 2.2rem; }
+      .subtitle { font-size: 1.05rem; }
+      .btn { font-size: 1.15rem; padding: 12px 26px; }
     }
   </style>
 </head>
+
 <body>
-  <!-- Logotipo -->
-  <img src="./img/logo-paqary.png" alt="Logo Paqary Justicia" class="logo">
 
-  <!-- Encabezado -->
-  <h1>Paqary Justicia</h1>
-  <p>Bienvenido al mapa interactivo de jueces de paz en Arequipa.</p>
+  <!-- blobs decorativos -->
+  <div class="blob1"></div>
+  <div class="blob2"></div>
 
-  <!-- Botón para ir al mapa -->
-  <a href="./mapa.html" class="btn">Ir al Mapa</a>
+  <!-- contenido -->
+  <div class="container">
+    <img src="./img/logo-paqary.png" alt="Logo Paqary Justicia" class="logo">
 
-  <!-- Pie de página -->
-  <footer>Voluntariado Paqary Justicia © 2025</footer>
+    <h1>Paqary Justicia</h1>
+
+    <p class="subtitle">
+      Sembrando confianza, fortaleciendo la justicia de paz en Arequipa.  
+      Un voluntariado comprometido con el acceso a la justicia.
+    </p>
+
+    <a href="./mapa.html" class="btn">Ingresar al Mapa</a>
+
+    <div class="arrows">➤➤➤</div>
+  </div>
+
+  <footer>
+    Voluntariado Paqary Justicia © 2025 — Todos los derechos reservados
+  </footer>
+
 </body>
 </html>
