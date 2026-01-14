@@ -74,6 +74,7 @@
             const props = feature.properties || {};
 
             // Crear marcador rojo para esta zona
+              /*
             if (props.markerLat && props.markerLng) {
               const marker = L.marker([props.markerLat, props.markerLng], { icon: redIcon })
                 .addTo(map)
@@ -83,7 +84,7 @@
                 markersById[props.id_zona] = marker;
               }
             }
-
+*/
             // Tooltip con nombre de zona
             if (props.zona) layer.bindTooltip(props.zona, { sticky: true });
 
