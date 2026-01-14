@@ -1,1 +1,83 @@
 
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id_zona": 1,
+        "zona": "CHARACATO",
+        "juez_de_paz": "DEIVY HERRERA TORRES",
+        "direccion": "Calle Socabaya N° 100, Plaza Principal de Characato",
+        "telefono": "972960129 / 958798821",
+        "horario": "Martes y viernes de 10:00 a 13:00 horas",
+        "correo": "deivyherrera19@gmail.com",
+        "mapsUrl": "https://maps.app.goo.gl/Erg1uZrfSop2W2yo6",
+        "markerLat": -16.4728798,
+        "markerLng": -71.4829052
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-71.491737, -16.461658],
+            [-71.484529, -16.464705],
+            [-71.481697, -16.465694],
+            [-71.476115, -16.467168],
+            [-71.470280, -16.469062],
+            [-71.463243, -16.470544],
+            [-71.458780, -16.470709],
+            [-71.455863, -16.471532],
+            [-71.460411, -16.475979],
+            [-71.457150, -16.481662],
+            [-71.457922, -16.482979],
+            [-71.466675, -16.481826],
+            [-71.470709, -16.485450],
+            [-71.476544, -16.485697],
+            [-71.485212, -16.485038],
+            [-71.490103, -16.485285],
+            [-71.491905, -16.487261],
+            [-71.498084, -16.487591],
+            [-71.502889, -16.488497],
+            [-71.506322, -16.488003],
+            [-71.502460, -16.479356],
+            [-71.502117, -16.473839],
+            [-71.499028, -16.468403],
+            [-71.496024, -16.463956],
+            [-71.491737, -16.461658]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id_zona": 2,
+        "zona": "CHIGUATA",
+        "juez_de_paz": "DEIVY HERRERA TORRES (por encargo)",
+        "direccion": "Chiguata 04200, Arequipa",
+        "telefono": "972960129",
+        "horario": "No registrado",
+        "correo": "deivyherrera19@gmail.com",
+        "mapsUrl": "https://maps.app.goo.gl/ec9MKsdRiihD4qbo8",
+        "markerLat": -16.402775,
+        "markerLng": -71.392962
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [-71.421782, -16.403908],
+            [-71.371323, -16.376717],
+            [-71.350212, -16.383309],
+            [-71.347466, -16.400939],
+            [-71.357935, -16.424334],
+            [-71.382307, -16.435537],
+            [-71.416976, -16.417745],
+            [-71.421782, -16.403908]
+          ]
+        ]
+      }
+    }
+  ]
+}
