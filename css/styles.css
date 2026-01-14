@@ -1,4 +1,4 @@
-<style>
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; }
 
@@ -66,4 +66,4 @@
       #sidebar { width: 100%; border-right: none; border-bottom: 1px solid #d7c8b4; max-height: 40vh; }
       #map { height: 60vh; }
     }
-  </style>
+
