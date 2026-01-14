@@ -54,6 +54,31 @@
     // ======================================================
     let zonasLayer; // referencia para fitBounds
 
+function getDistrictColor(name) {
+  const colors = [
+    "#e63946",
+    "#f1a208",
+    "#2a9d8f",
+    "#457b9d",
+    "#9b5de5",
+    "#ff6f91",
+    "#43aa8b",
+    "#f3722c",
+    "#277da1",
+    "#bc4749",
+    "#6d597a",
+    "#84a59d"
+  ];
+
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  return colors[Math.abs(hash) % colors.length];
+}
+
+
     fetch("data/limites/arequipa_distritos.geojson")
       .then((res) => {
         if (!res.ok) throw new Error("No se pudo cargar el GeoJSON (404/permiso/ruta).");
@@ -62,14 +87,20 @@
       .then((zonasGeoJson) => {
 
         zonasLayer = L.geoJSON(zonasGeoJson, {
-          style: function () {
-            return {
-              color: "#8b4513",
-              weight: 2,
-              fillColor: "#d9b48f",
-              fillOpacity: 0.45
-            };
-          },
+          style: function (feature) {
+  const props = feature.properties || {};
+
+  const nombreDistrito =
+    props.zona || props.name || props["name:es"] || "Distrito";
+
+  return {
+    color: "#5a3e2b", // borde
+    weight: 2,
+    fillColor: getDistrictColor(nombreDistrito),
+    fillOpacity: 0.6
+  };
+},
+
           onEachFeature: function (feature, layer) {
             const props = feature.properties || {};
 
