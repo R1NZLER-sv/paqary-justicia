@@ -6,31 +6,18 @@
   <title>Paqary Justicia - Mapa de Jueces de Paz</title>
 
   <!-- Leaflet CSS -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      height: 100%;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; }
 
     body {
       font-family: "Inter", system-ui, sans-serif;
-
-      /* Fondo crema editorial */
       background:
         linear-gradient(135deg, rgba(234,219,200,0.5), rgba(247,239,230,0.9)),
         linear-gradient(180deg, #f7efe6, #eadbc8);
       background-blend-mode: multiply;
-
       color: #4a2e1f;
     }
 
@@ -44,13 +31,11 @@
       font-size: 1.05rem;
     }
 
-    /* Contenedor principal: ocupa casi toda la pantalla */
     #container {
       display: flex;
-      height: calc(100vh - 60px); /* 60px aprox. del header */
+      height: calc(100vh - 60px);
     }
 
-    /* Panel izquierdo */
     #sidebar {
       width: 320px;
       max-width: 100%;
@@ -72,10 +57,7 @@
       color: #6b4a32;
     }
 
-    .field-label {
-      font-weight: 600;
-      color: #4a2e1f;
-    }
+    .field-label { font-weight: 600; color: #4a2e1f; }
 
     .zone-pill {
       display: inline-block;
@@ -87,50 +69,27 @@
       font-size: 0.8rem;
     }
 
-    /* Mapa a la derecha */
-    #map {
-      flex: 1;
-      height: 100%;
-    }
+    #map { flex: 1; height: 100%; }
 
-    /* Responsive */
     @media (max-width: 768px) {
-      #container {
-        flex-direction: column;
-        height: auto;
-        min-height: 100vh;
-      }
-
-      #sidebar {
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid #d7c8b4;
-        max-height: 40vh;
-      }
-
-      #map {
-        height: 60vh;
-      }
+      #container { flex-direction: column; height: auto; min-height: 100vh; }
+      #sidebar { width: 100%; border-right: none; border-bottom: 1px solid #d7c8b4; max-height: 40vh; }
+      #map { height: 60vh; }
     }
   </style>
 </head>
 
 <body>
-
   <header>Paqary Justicia – Mapa de Jueces de Paz</header>
 
   <div id="container">
-
-    <!-- PANEL IZQUIERDO -->
     <aside id="sidebar">
       <h2>Selecciona una zona en el mapa</h2>
       <p>Haz clic sobre un área coloreada para ver los datos del juez de paz.</p>
       <div id="zone-details"></div>
     </aside>
 
-    <!-- MAPA -->
     <div id="map"></div>
-
   </div>
 
   <!-- Leaflet JS -->
@@ -138,96 +97,8 @@
 
   <script>
     // ======================================================
-    // GEOJSON – ZONAS (por ahora: CHARACATO y CHIGUATA)
-    // ======================================================
-
-    const zonasGeoJson = {
-      "type": "FeatureCollection",
-      "features": [
-        {
-          "type": "Feature",
-          "properties": {
-            "id_zona": 1,
-            "zona": "CHARACATO",
-            "juez_de_paz": "DEIVY HERRERA TORRES",
-            "direccion": "Calle Socabaya N° 100, Plaza Principal de Characato",
-            "telefono": "972960129 / 958798821",
-            "horario": "Martes y viernes de 10:00 a 13:00 horas",
-            "correo": "deivyherrera19@gmail.com",
-            "mapsUrl": "https://maps.app.goo.gl/Erg1uZrfSop2W2yo6",
-            "markerLat": -16.4728798,
-            "markerLng": -71.4829052
-          },
-          "geometry": {
-            "type": "Polygon",
-            "coordinates": [
-              [
-                [-71.491737, -16.461658],
-                [-71.484529, -16.464705],
-                [-71.481697, -16.465694],
-                [-71.476115, -16.467168],
-                [-71.470280, -16.469062],
-                [-71.463243, -16.470544],
-                [-71.458780, -16.470709],
-                [-71.455863, -16.471532],
-                [-71.460411, -16.475979],
-                [-71.457150, -16.481662],
-                [-71.457922, -16.482979],
-                [-71.466675, -16.481826],
-                [-71.470709, -16.485450],
-                [-71.476544, -16.485697],
-                [-71.485212, -16.485038],
-                [-71.490103, -16.485285],
-                [-71.491905, -16.487261],
-                [-71.498084, -16.487591],
-                [-71.502889, -16.488497],
-                [-71.506322, -16.488003],
-                [-71.502460, -16.479356],
-                [-71.502117, -16.473839],
-                [-71.499028, -16.468403],
-                [-71.496024, -16.463956],
-                [-71.491737, -16.461658]
-              ]
-            ]
-          }
-        },
-        {
-          "type": "Feature",
-          "properties": {
-            "id_zona": 2,
-            "zona": "CHIGUATA",
-            "juez_de_paz": "DEIVY HERRERA TORRES (por encargo)",
-            "direccion": "Chiguata 04200, Arequipa",
-            "telefono": "972960129",
-            "horario": "No registrado",
-            "correo": "deivyherrera19@gmail.com",
-            "mapsUrl": "https://maps.app.goo.gl/ec9MKsdRiihD4qbo8",
-            "markerLat": -16.402775,
-            "markerLng": -71.392962
-          },
-          "geometry": {
-            "type": "Polygon",
-            "coordinates": [
-              [
-                [-71.421782, -16.403908],
-            [-71.371323, -16.376717],
-            [-71.350212, -16.383309],
-            [-71.347466, -16.400939],
-            [-71.357935, -16.424334],
-            [-71.382307, -16.435537],
-            [-71.416976, -16.417745],
-            [-71.421782, -16.403908]
-              ]
-            ]
-          }
-        }
-      ]
-    };
-
-    // ======================================================
     // INICIALIZAR MAPA
     // ======================================================
-
     const map = L.map("map").setView([-16.43, -71.52], 11);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -238,7 +109,6 @@
     // ======================================================
     // PANEL LATERAL – MOSTRAR DETALLES
     // ======================================================
-
     const zoneDetailsDiv = document.getElementById("zone-details");
 
     function showZoneDetails(props) {
@@ -247,18 +117,14 @@
         <span class="zone-pill">${props.zona}</span>
 
         <div style="margin-top:12px; text-align:left; line-height:1.5;">
-          <p><span class="field-label">Juez de Paz:</span><br>${props.juez_de_paz}</p>
-
-          <p><span class="field-label">Dirección:</span><br>${props.direccion}</p>
-
-          <p><span class="field-label">Horario de atención:</span><br>${props.horario}</p>
-
-          <p><span class="field-label">Teléfono:</span><br>${props.telefono}</p>
-
-          <p><span class="field-label">Correo:</span><br>${props.correo}</p>
+          <p><span class="field-label">Juez de Paz:</span><br>${props.juez_de_paz ?? "No registrado"}</p>
+          <p><span class="field-label">Dirección:</span><br>${props.direccion ?? "No registrado"}</p>
+          <p><span class="field-label">Horario de atención:</span><br>${props.horario ?? "No registrado"}</p>
+          <p><span class="field-label">Teléfono:</span><br>${props.telefono ?? "No registrado"}</p>
+          <p><span class="field-label">Correo:</span><br>${props.correo ?? "No registrado"}</p>
 
           <p><span class="field-label">Cómo llegar:</span><br>
-            <a href="${props.mapsUrl}" target="_blank" style="color:#8b4513; font-weight:600;">
+            <a href="${props.mapsUrl ?? "#"}" target="_blank" style="color:#8b4513; font-weight:600;">
               Abrir en Google Maps
             </a>
           </p>
@@ -269,7 +135,6 @@
     // ======================================================
     // ICONO ROJO PARA TODOS LOS JUZGADOS
     // ======================================================
-
     const redIcon = L.icon({
       iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
       shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
@@ -283,51 +148,74 @@
     const markersById = {};
 
     // ======================================================
-    // DIBUJAR POLÍGONOS GEOJSON + MARCADORES
+    // CARGAR GEOJSON EXTERNO + DIBUJAR CAPAS
     // ======================================================
+    let zonasLayer; // referencia para fitBounds
 
-    const zonasLayer = L.geoJSON(zonasGeoJson, {
-      style: function (feature) {
-        return {
-          color: "#8b4513",      // borde marrón
-          weight: 2,
-          fillColor: "#d9b48f",  // relleno tierra-crema
-          fillOpacity: 0.45
-        };
-      },
-      onEachFeature: function (feature, layer) {
-        const props = feature.properties;
+    fetch("data/jueces_paz_arequipa.geojson")
+      .then((res) => {
+        if (!res.ok) throw new Error("No se pudo cargar el GeoJSON (404/permiso/ruta).");
+        return res.json();
+      })
+      .then((zonasGeoJson) => {
 
-        // Crear marcador rojo para esta zona
-        if (props.markerLat && props.markerLng) {
-          const marker = L.marker([props.markerLat, props.markerLng], { icon: redIcon })
-            .addTo(map)
-            .bindPopup(`Juzgado de Paz de ${props.zona}`);
+        zonasLayer = L.geoJSON(zonasGeoJson, {
+          style: function () {
+            return {
+              color: "#8b4513",
+              weight: 2,
+              fillColor: "#d9b48f",
+              fillOpacity: 0.45
+            };
+          },
+          onEachFeature: function (feature, layer) {
+            const props = feature.properties || {};
 
-          markersById[props.id_zona] = marker;
-        }
+            // Crear marcador rojo para esta zona
+            if (props.markerLat && props.markerLng) {
+              const marker = L.marker([props.markerLat, props.markerLng], { icon: redIcon })
+                .addTo(map)
+                .bindPopup(`Juzgado de Paz de ${props.zona ?? "Zona"}`);
 
-        // Tooltip con nombre de zona
-        layer.bindTooltip(props.zona, { sticky: true });
+              if (props.id_zona != null) {
+                markersById[props.id_zona] = marker;
+              }
+            }
 
-        // Click → mostrar datos en panel y centrar en el pin correspondiente
-        layer.on("click", function () {
-          showZoneDetails(props);
+            // Tooltip con nombre de zona
+            if (props.zona) layer.bindTooltip(props.zona, { sticky: true });
 
-          const marker = markersById[props.id_zona];
-          if (marker) {
-            map.setView([props.markerLat, props.markerLng], 17);
-            marker.openPopup();
-          } else {
-            // fallback: centrar en el polígono
-            map.fitBounds(layer.getBounds());
+            // Click → mostrar datos en panel y centrar en el pin correspondiente
+            layer.on("click", function () {
+              showZoneDetails(props);
+
+              const marker = markersById[props.id_zona];
+              if (marker && props.markerLat && props.markerLng) {
+                map.setView([props.markerLat, props.markerLng], 17);
+                marker.openPopup();
+              } else {
+                map.fitBounds(layer.getBounds());
+              }
+            });
           }
-        });
-      }
-    }).addTo(map);
+        }).addTo(map);
 
-    // Centrar el mapa para que todas las zonas se vean
-    map.fitBounds(zonasLayer.getBounds());
+        // Centrar el mapa para que todas las zonas se vean
+        map.fitBounds(zonasLayer.getBounds());
+      })
+      .catch((err) => {
+        console.error(err);
+        zoneDetailsDiv.innerHTML = `
+          <p style="color:#b91c1c; font-weight:700; margin-top:10px;">
+            Error cargando las zonas. Verifica:
+          </p>
+          <ul style="margin-left:18px; margin-top:6px; line-height:1.5;">
+            <li>Que exista <b>data/jueces_paz_arequipa.geojson</b></li>
+            <li>Que el archivo sea JSON válido (sin "const" ni ";")</li>
+            <li>Que estés abriendo desde GitHub Pages, no desde archivo local</li>
+          </ul>
+        `;
+      });
   </script>
 </body>
 </html>
