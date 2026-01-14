@@ -13,26 +13,29 @@
     // ======================================================
     const zoneDetailsDiv = document.getElementById("zone-details");
 
-    function showZoneDetails(props) {
-      zoneDetailsDiv.innerHTML = `
-        <h2>Juzgado de Paz de ${props.zona}</h2>
-        <span class="zone-pill">${props.zona}</span>
+function showZoneDetails(props) {
+  const nombreDistrito = props.zona || props.name || props["name:es"] || "Distrito";
 
-        <div style="margin-top:12px; text-align:left; line-height:1.5;">
-          <p><span class="field-label">Juez de Paz:</span><br>${props.juez_de_paz ?? "No registrado"}</p>
-          <p><span class="field-label">Dirección:</span><br>${props.direccion ?? "No registrado"}</p>
-          <p><span class="field-label">Horario de atención:</span><br>${props.horario ?? "No registrado"}</p>
-          <p><span class="field-label">Teléfono:</span><br>${props.telefono ?? "No registrado"}</p>
-          <p><span class="field-label">Correo:</span><br>${props.correo ?? "No registrado"}</p>
+  zoneDetailsDiv.innerHTML = `
+    <h2>Juzgado de Paz de ${nombreDistrito}</h2>
+    <span class="zone-pill">${nombreDistrito}</span>
 
-          <p><span class="field-label">Cómo llegar:</span><br>
-            <a href="${props.mapsUrl ?? "#"}" target="_blank" style="color:#8b4513; font-weight:600;">
-              Abrir en Google Maps
-            </a>
-          </p>
-        </div>
-      `;
-    }
+    <div style="margin-top:12px; text-align:left; line-height:1.5;">
+      <p><span class="field-label">Juez de Paz:</span><br>${props.juez_de_paz ?? "No registrado"}</p>
+      <p><span class="field-label">Dirección:</span><br>${props.direccion ?? "No registrado"}</p>
+      <p><span class="field-label">Horario de atención:</span><br>${props.horario ?? "No registrado"}</p>
+      <p><span class="field-label">Teléfono:</span><br>${props.telefono ?? "No registrado"}</p>
+      <p><span class="field-label">Correo:</span><br>${props.correo ?? "No registrado"}</p>
+
+      <p><span class="field-label">Cómo llegar:</span><br>
+        <a href="${props.mapsUrl ?? "#"}" target="_blank" style="color:#8b4513; font-weight:600;">
+          Abrir en Google Maps
+        </a>
+      </p>
+    </div>
+  `;
+}
+
 
     // ======================================================
     // ICONO ROJO PARA TODOS LOS JUZGADOS
