@@ -54,7 +54,7 @@
     // ======================================================
     let zonasLayer; // referencia para fitBounds
 
-    fetch("data/jueces_paz_arequipa.geojson")
+    fetch("data/limites/arequipa_distritos.geojson")
       .then((res) => {
         if (!res.ok) throw new Error("No se pudo cargar el GeoJSON (404/permiso/ruta).");
         return res.json();
@@ -118,22 +118,5 @@
           </ul>
         `;
       });
-fetch("data/limites/arequipa_distritos.geojson")
-  .then(r => r.json())
-  .then(gj => {
-    const layer = L.geoJSON(gj, {
-      style: {
-        color: "#8b4513",
-        weight: 2,
-        fillColor: "#d9b48f",
-        fillOpacity: 0.35
-      },
-      onEachFeature: (feature, layer) => {
-        const p = feature.properties || {};
-        layer.bindTooltip(p.name || p["name:es"] || "Distrito", { sticky: true });
-      }
-    }).addTo(map);
 
-    map.fitBounds(layer.getBounds());
-  });
 
