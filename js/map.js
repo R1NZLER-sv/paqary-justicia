@@ -90,6 +90,11 @@ function getDistrictColor(name) {
       .then((zonasGeoJson) => {
 
         zonasLayer = L.geoJSON(zonasGeoJson, {
+            filter: function (feature) {
+    return feature.geometry &&
+      (feature.geometry.type === "Polygon" ||
+       feature.geometry.type === "MultiPolygon");
+  },
           style: function (feature) {
   const props = feature.properties || {};
 
