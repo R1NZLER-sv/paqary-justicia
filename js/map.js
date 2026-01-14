@@ -103,6 +103,16 @@ function getDistrictColor(name) {
 
           onEachFeature: function (feature, layer) {
             const props = feature.properties || {};
+layer.on("mouseover", function () {
+  layer.setStyle({
+    weight: 3,
+    fillOpacity: 0.8
+  });
+});
+
+layer.on("mouseout", function () {
+  zonasLayer.resetStyle(layer);
+});
 
             // Crear marcador rojo para esta zona
               /*
