@@ -138,7 +138,7 @@ Promise.all([
     }
   }).addTo(map);
 
-  map.fitBounds(zonasLayer.getBounds());
+
 })
 .catch((err) => {
   console.error(err);
