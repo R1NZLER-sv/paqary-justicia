@@ -82,7 +82,7 @@ function getDistrictColor(name) {
 }
 
 
-    fetch("data/limites/arequipa_distritos.geojson")
+    fetch("data/limites/arequipa_distritos_02.geojson")
       .then((res) => {
         if (!res.ok) throw new Error("No se pudo cargar el GeoJSON (404/permiso/ruta).");
         return res.json();
