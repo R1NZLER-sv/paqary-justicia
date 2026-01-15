@@ -81,92 +81,82 @@ function getDistrictColor(name) {
   return colors[Math.abs(hash) % colors.length];
 }
 
+Promise.all([
+  fetch("data/limites/arequipa_distritos.geojson").then(r => r.json()),
+  fetch("data/jueces_por_distrito.json").then(r => r.json())
+])
+.then(([zonasGeoJson, juecesData]) => {
 
-    fetch("data/limites/arequipa_distritos_02.geojson")
-      .then((res) => {
-        if (!res.ok) throw new Error("No se pudo cargar el GeoJSON (404/permiso/ruta).");
-        return res.json();
-      })
-      .then((zonasGeoJson) => {
+  // Mapa: "MIRAFLORES" -> {juez_de_paz, direccion, ...}
+  const juecesMap = new Map(
+    juecesData.map(j => [String(j.distrito || "").trim().toUpperCase(), j])
+  );
 
-        zonasLayer = L.geoJSON(zonasGeoJson, {
-            filter: function (feature) {
-    return feature.geometry &&
-      (feature.geometry.type === "Polygon" ||
-       feature.geometry.type === "MultiPolygon");
-  },
-          style: function (feature) {
-  const props = feature.properties || {};
+  zonasLayer = L.geoJSON(zonasGeoJson, {
+    // ✅ quita pines azules
+    filter: function (feature) {
+      const t = feature?.geometry?.type;
+      return t === "Polygon" || t === "MultiPolygon";
+    },
 
-  const nombreDistrito =
-    props.zona || props.name || props["name:es"] || "Distrito";
+    style: function (feature) {
+      const props = feature.properties || {};
+      const nombreDistrito = (props.zona || props.name || props["name:es"] || "Distrito");
+      return {
+        color: "#5a3e2b",
+        weight: 2,
+        fillColor: getDistrictColor(nombreDistrito),
+        fillOpacity: 0.6
+      };
+    },
 
-  return {
-    color: "#5a3e2b", // borde
-    weight: 2,
-    fillColor: getDistrictColor(nombreDistrito),
-    fillOpacity: 0.6
-  };
-},
+    onEachFeature: function (feature, layer) {
+      const props = feature.properties || {};
+      const nombreDistrito = (props.zona || props.name || props["name:es"] || "Distrito");
 
-          onEachFeature: function (feature, layer) {
-            const props = feature.properties || {};
-layer.on("mouseover", function () {
-  layer.setStyle({
-    weight: 3,
-    fillOpacity: 0.8
-  });
-});
+      // ✅ “enriquecer” props con datos de jueces
+      const key = String(nombreDistrito).trim().toUpperCase();
+      const datosJuez = juecesMap.get(key) || {};
 
-layer.on("mouseout", function () {
-  zonasLayer.resetStyle(layer);
-});
+      const mergedProps = ListoMerge(props, datosJuez); // <- función abajo
 
-            // Crear marcador rojo para esta zona
-              /*
-            if (props.markerLat && props.markerLng) {
-              const marker = L.marker([props.markerLat, props.markerLng], { icon: redIcon })
-                .addTo(map)
-                .bindPopup(`Juzgado de Paz de ${props.zona ?? "Zona"}`);
+      // tooltip con el nombre
+      layer.bindTooltip(nombreDistrito, { sticky: true });
 
-              if (props.id_zona != null) {
-                markersById[props.id_zona] = marker;
-              }
-            }
-*/
-            // Tooltip con nombre de zona
-            if (props.zona) layer.bindTooltip(props.zona, { sticky: true });
-
-            // Click → mostrar datos en panel y centrar en el pin correspondiente
-            layer.on("click", function () {
-              showZoneDetails(props);
-
-              const marker = markersById[props.id_zona];
-              if (marker && props.markerLat && props.markerLng) {
-                map.setView([props.markerLat, props.markerLng], 17);
-                marker.openPopup();
-              } else {
-                map.fitBounds(layer.getBounds());
-              }
-            });
-          }
-        }).addTo(map);
-
-        // Centrar el mapa para que todas las zonas se vean
-        map.fitBounds(zonasLayer.getBounds());
-      })
-      .catch((err) => {
-        console.error(err);
-        zoneDetailsDiv.innerHTML = `
-          <p style="color:#b91c1c; font-weight:700; margin-top:10px;">
-            Error cargando las zonas. Verifica:
-          </p>
-          <ul style="margin-left:18px; margin-top:6px; line-height:1.5;">
-            <li>Que exista <b>data/jueces_paz_arequipa.geojson</b></li>
-            <li>Que el archivo sea JSON válido (sin "const" ni ";")</li>
-            <li>Que estés abriendo desde GitHub Pages, no desde archivo local</li>
-          </ul>
-        `;
+      layer.on("click", function () {
+        showZoneDetails(mergedProps);
+        map.fitBounds(layer.getBounds());
       });
+
+      layer.on("mouseover", function () {
+        layer.setStyle({ weight: 3, fillOpacity: 0.8 });
+      });
+
+      layer.on("mouseout", function () {
+        zonasLayer.resetStyle(layer);
+      });
+    }
+  }).addTo(map);
+
+  map.fitBounds(zonasLayer.getBounds());
+})
+.catch((err) => {
+  console.error(err);
+  zoneDetailsDiv.innerHTML = `<p style="color:#b91c1c;font-weight:700;">Error cargando datos</p>`;
+});
+
+// Helper simple para merge
+function ListoMerge(props, datosJuez) {
+  return {
+    ...props,
+    juez_de_paz: datosJuez.juez_de_paz ?? props.juez_de_paz,
+    direccion: datosJuez.direccion ?? props.direccion,
+    telefono: datosJuez.telefono ?? props.telefono,
+    correo: datosJuez.correo ?? props.correo,
+    horario: datosJuez.horario ?? props.horario,
+    mapsUrl: datosJuez.mapsUrl ?? props.mapsUrl
+  };
+}
+
 
 
